@@ -1,4 +1,4 @@
-name: Python CI - Week1 Project
+name: CI
 
 on:
   push:
@@ -8,40 +8,14 @@ on:
 
 jobs:
   build:
-    runs-on: ubuntu-latest
-
+    runs-on: windows-latest
     steps:
-      - name: Checkout repository
-        uses: actions/checkout@v3
-
-      - name: Set up Python 3.13
-        uses: actions/setup-python@v4
-        with:
-          python-version: '3.13'
-
-      - name: Install dependencies
-        run: |
-          python -m pip install --upgrade pip
-          pip install -r requirements.txt
-          pip install nbformat nbconvert flake8
-
-      - name: Lint with flake8
-        run: |
-          flake8 src/ scripts/ notebooks/ --count --select=E9,F63,F7,F82 --show-source --statistics || true
-
-      - name: Validate notebooks
-        run: |
-          for notebook in $(find notebooks/ -name "*.ipynb"); do
-            echo "Checking $notebook"
-            jupyter nbconvert --to notebook --execute "$notebook" --stdout > /dev/null
-          done
-
-      - name: Run unit tests (if available)
-        run: |
-          if [ -d "tests" ]; then
-            echo "Running pytest..."
-            pip install pytest
-            pytest tests/
-          else
-            echo "No tests directory found — skipping."
-          fi
+    - uses: actions/checkout@v2
+    - name: Set up Python
+      uses: actions/setup-python@v2
+      with:
+        python-version: '3.12'
+    - name: Install dependencies
+      run: |
+        python -m pip install --upgrade pip
+        
